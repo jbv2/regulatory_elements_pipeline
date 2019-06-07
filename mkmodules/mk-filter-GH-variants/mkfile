@@ -1,0 +1,14 @@
+MKSHELL=/bin/bash
+#Definir MKSHELL ahora debe ir siempre arriba con /bin/bash. "Todo lo que viene a continuación interprétalo con bash"
+
+##This code block will filter rows where the column "GeneHancer_type"
+# aka the column number 77 have a value that begins with "^GH"
+
+%.tsv:Q: %.tsv.gz
+	echo "[DEBUG] filtering GeneHancer variants for $prereq"
+	awk '
+		BEGIN {FS=OFS="\t"}
+		$77 ~ /^GH.*/ { print $0 }
+	' $prereq > $target.build \
+	&& mv $target.build $target
+	
