@@ -4,11 +4,12 @@ MKSHELL=/bin/bash
 ##This code block will filter rows where the column "GeneHancer_type"
 # aka the column number 77 have a value that begins with "^GH"
 
-%.tsv:Q: %.tsv.gz
+%.filtered.tsv:Q: %.tsv.gz
 	echo "[DEBUG] filtering GeneHancer variants for $prereq"
-	awk '
+	zcat $prereq \
+	|awk '
 		BEGIN {FS=OFS="\t"}
-		$77 ~ /^GH.*/ { print $0 }
-	' $prereq > $target.build \
+		NR == 1 {print $0} 
+		$77~/^GH.*/ { print $0 }
+	' > $target.build \
 	&& mv $target.build $target
-	
